@@ -19,7 +19,7 @@
 - （可選）Python 3，如果要跑 `visualize.py` 
 
 ## 指令順序
-1. 建立 Docker Image4
+1. 建立 Docker Image
 ```bash
 docker build -t node-profile-benchmark .
 ```
