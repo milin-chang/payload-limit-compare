@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <title>Bin Packing - Express</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 40px auto;
+    }
+    input, button {
+      width: 100%;
+      padding: 6px;
+      margin: 6px 0;
+    }
+    .bin {
+      border: 1px solid #ccc;
+      padding: 8px;
+      margin-top: 8px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Bin Packing（Express + FFD）</h2>
+
+<label>箱子容量</label>
+<input id="capacity" type="number" placeholder="例如：10">
+
+<label>物品大小（逗號分隔）</label>
+<input id="items" type="text" placeholder="例如：4,8,1,4,2,1">
+
+<button onclick="calculate()">計算</button>
+
+<div id="result"></div>
+
+<script>
+  async function calculate() {
+    const capacity = Number(document.getElementById("capacity").value);
+    const items = document.getElementById("items").value
+      .split(",")
+      .map(v => Number(v.trim()))
+      .filter(v => v > 0);
+
+    const res = await fetch("/api/bin-packing", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ capacity, items })
+    });
+
+    const data = await res.json();
+
+    const resultDiv = document.getElementById("result");
+    resultDiv.innerHTML = `<h3>使用箱子數：${data.count}</h3>`;
+
+    data.bins.forEach((bin, i) => {
+      const div = document.createElement("div");
+      div.className = "bin";
+      div.innerHTML = `
+        <strong>箱子 ${i + 1}</strong><br>
+        物品：${bin.items.join(", ")}<br>
+        剩餘容量：${bin.remaining}
+      `;
+      resultDiv.appendChild(div);
+    });
+  }
+</script>
+
+</body>
+</html>
